@@ -5,11 +5,11 @@
     <string name="title_activity_main">First Launch</string>
 
     <string name="settings.category.general">General</string>
-    <string name="settings.category.UI">User Interface</string>
+    <string name="settings.category.ui">User Interface</string>
 
     <string name="settings.setting.require_auth">Require Authentication</string>
-    <string name="settings.setting.require_auth.description">Disables/enables authentication message when revealing your ClassCharts code.</string>
+    <string name="settings.setting.require_auth.description">Enables authentication message when revealing your ClassCharts code.</string>
 
-    <string name="settings.setting.zoom_controls">Zoom Controls</string>
-    <string name="settings.setting.zoom_controls.description">Hides/shows the built-in zoom controls when displaying web content (e.g. announcements).</string>
+    <string name="settings.setting.zoom_controls">Enable Zoom Controls</string>
+    <string name="settings.setting.zoom_controls.description">Enables the built-in zoom controls when displaying web content (e.g. announcements).</string>
 </resources>

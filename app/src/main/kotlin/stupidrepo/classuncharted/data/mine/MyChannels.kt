@@ -1,7 +1,6 @@
 package stupidrepo.classuncharted.data.mine
 
 import android.app.NotificationManager
-import stupidrepo.classuncharted.data.api.Announcement
 
 object MyChannels {
     val DetentionChannel: ChannelInfo

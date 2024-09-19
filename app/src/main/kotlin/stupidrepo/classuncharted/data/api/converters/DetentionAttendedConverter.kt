@@ -1,9 +1,7 @@
 package stupidrepo.classuncharted.data.api.converters
 
 import androidx.room.TypeConverter
-import stupidrepo.classuncharted.data.api.Attachment
 import stupidrepo.classuncharted.data.api.DetentionAttended
-import stupidrepo.classuncharted.utils.JSONUtils
 
 class DetentionAttendedConverter {
     @TypeConverter

@@ -2,14 +2,12 @@ package stupidrepo.classuncharted.managers
 
 import android.content.Context
 import android.util.Log
-import org.reflections.Reflections
 import stupidrepo.classuncharted.settings.models.Category
 import stupidrepo.classuncharted.settings.models.MySettings.SETTINGS
 import stupidrepo.classuncharted.settings.models.Setting
 
 class SettingsManager(context: Context) {
     private val TAG = "SettingsManager"
-    private val reflections = Reflections()
 
     private val sharedPreferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
     fun getSettingsGroupedByCategory(): Map<Category, List<Setting>> {

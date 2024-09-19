@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import stupidrepo.classuncharted.data.api.Activity
 import stupidrepo.classuncharted.data.api.Announcement
 
 @Dao

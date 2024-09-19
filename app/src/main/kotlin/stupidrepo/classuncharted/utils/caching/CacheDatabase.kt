@@ -6,7 +6,6 @@ import androidx.room.TypeConverters
 import stupidrepo.classuncharted.data.api.Activity
 import stupidrepo.classuncharted.data.api.Announcement
 import stupidrepo.classuncharted.data.api.Detention
-import stupidrepo.classuncharted.data.api.DetentionAttended
 import stupidrepo.classuncharted.data.api.converters.AttachmentsConverter
 import stupidrepo.classuncharted.data.api.converters.DetentionAttendedConverter
 import stupidrepo.classuncharted.data.api.converters.DetentionTypeConverter
