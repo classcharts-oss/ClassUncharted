@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="littleMargin">4dp</dimen>
+    <dimen name="bigMargin">8dp</dimen>
+
+    <dimen name="titleTS">25sp</dimen>
+    <dimen name="descriptionTS">18sp</dimen>
+    <dimen name="extraTS">16sp</dimen>
+</resources>
