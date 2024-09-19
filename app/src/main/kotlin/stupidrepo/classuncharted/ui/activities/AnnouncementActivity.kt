@@ -34,7 +34,7 @@ import stupidrepo.classuncharted.MyApplication
 import stupidrepo.classuncharted.data.api.Announcement
 import stupidrepo.classuncharted.managers.LoginManager
 import stupidrepo.classuncharted.managers.SettingsManager
-import stupidrepo.classuncharted.settings.ZoomControlsSetting
+import stupidrepo.classuncharted.settings.ZoomEnabledSetting
 import stupidrepo.classuncharted.ui.composables.AndroidAnnoyance
 import stupidrepo.classuncharted.ui.composables.AttachmentsList
 import stupidrepo.classuncharted.utils.DialogUtils
@@ -94,8 +94,7 @@ fun FullSizeAnnouncement(announcement: Announcement) {
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
         AndroidView(factory = {
             WebView(it).apply {
-                settings.builtInZoomControls = true
-                settings.displayZoomControls = (settingsManager.getSetting(ZoomControlsSetting::class)?.value ?: false) as Boolean
+                settings.builtInZoomControls = (settingsManager.getSetting(ZoomEnabledSetting::class)?.value ?: true) as Boolean
             }
         }, update = {
             it.loadData(announcement.description, "text/html", "UTF-8")

@@ -5,7 +5,7 @@ import stupidrepo.classuncharted.settings.models.MyCategories
 import stupidrepo.classuncharted.settings.models.Setting
 import stupidrepo.classuncharted.utils.AuthUtils
 
-class RequireAuthSetting : Setting(MyCategories.GENERAL, "require_auth", true) {
+class RequireAuthSetting : Setting(MyCategories.SECURITY, "require_auth", true) {
     override fun onClick(context: Context, newValue: Any) {
         if(newValue == false) {
             AuthUtils.showBiometricPrompt(context, {

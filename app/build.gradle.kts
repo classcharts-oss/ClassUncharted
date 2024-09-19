@@ -81,6 +81,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.biometric)
+    implementation(libs.androidx.webkit)
 
     annotationProcessor("androidx.room:room-compiler:${libs.versions.roomCommonVersion.get()}")
     ksp("androidx.room:room-compiler:${libs.versions.roomCommonVersion.get()}")
