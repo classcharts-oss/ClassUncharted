@@ -10,15 +10,10 @@ A remake of ClassCharts' (awful) Android 'app', but in native Android UI using J
 - [x] View activities **(core)**
 - [x] Push notifications **(core)**
   - [x] Detentions
+  - [x] Announcements
   - [x] Activities
   - [ ] Current Lesson
   - [ ] Homework
-
-### Planned
-- [Check PR #1](https://github.com/StupidRepo/ClassUncharted/pull/1)
-
-> [!NOTE]
-> This branch is the rewrite of the app in Kotlin.
-> Most features aren't here yet, but the app is in a usable state and has some core features.
-> Please check [PR #1](https://github.com/StupidRepo/ClassUncharted/pull/1) for a better list of these implemented features.
-> Oh, and, feel free to contribute! 😛
+- [x] Account switcher
+  - [ ] Reworked account switcher
+- Change date ranges of certain tabs

@@ -43,7 +43,6 @@
             android:name=".HomeActivity"
             android:exported="false"
         />
-
         <activity
             android:name=".ui.activities.SettingsActivity"
             android:exported="false"
@@ -53,6 +52,10 @@
             android:name=".ui.activities.AnnouncementActivity"
             android:exported="false"
         />
+        <activity
+            android:name=".ui.activities.HomeworkActivity"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

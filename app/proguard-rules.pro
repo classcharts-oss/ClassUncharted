@@ -22,3 +22,9 @@
 -keep class * extends androidx.room.RoomDatabase
 -keep @androidx.room.* class *
 -keep @androidx.room.* interface *
+-dontshrink
+-dontobfuscate
+-dontoptimize
+-dontusemixedcaseclassnames
+-dontnote *
+-dontwarn *

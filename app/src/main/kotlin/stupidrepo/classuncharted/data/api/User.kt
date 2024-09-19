@@ -44,4 +44,8 @@ data class User (
     fun getAnnouncements(): List<Announcement> {
         return APIManager.GET<Announcement>("announcements")
     }
+
+    fun getHomework(): List<Homework> {
+        return APIManager.GET<Homework>("homeworks")
+    }
 }

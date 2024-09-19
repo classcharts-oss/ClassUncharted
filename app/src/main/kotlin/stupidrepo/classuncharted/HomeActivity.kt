@@ -14,9 +14,11 @@ import androidx.compose.material.icons.automirrored.outlined.Announcement
 import androidx.compose.material.icons.filled.AccessTimeFilled
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Today
+import androidx.compose.material.icons.filled.Work
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Assessment
 import androidx.compose.material.icons.outlined.Today
+import androidx.compose.material.icons.outlined.WorkOutline
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -46,6 +48,7 @@ import stupidrepo.classuncharted.ui.pages.ActivityPage
 import stupidrepo.classuncharted.ui.pages.AnnouncementsPage
 import stupidrepo.classuncharted.ui.pages.BradPage
 import stupidrepo.classuncharted.ui.pages.DetentionsPage
+import stupidrepo.classuncharted.ui.pages.HomeworkPage
 import stupidrepo.classuncharted.ui.pages.TimetablePage
 
 val selectedTabIndex = mutableIntStateOf(0) // we put this here so that when we rotate the screen, the selected tab doesn't change 🙄
@@ -67,12 +70,12 @@ class HomeActivity : FragmentActivity() {
             selectedIcon = Icons.Filled.AccessTimeFilled,
             page = DetentionsPage()
         ),
-//        TabItem(
-//            title = "Homework",
-//            icon = Icons.Rounded.WorkOutline,
-//            selectedIcon = Icons.Rounded.Work,
-//            page = HomeworkPage()
-//        ),
+        TabItem(
+            title = "Homework",
+            icon = Icons.Outlined.WorkOutline,
+            selectedIcon = Icons.Filled.Work,
+            page = HomeworkPage()
+        ),
         TabItem(
             title = "Announcements",
             icon = Icons.AutoMirrored.Outlined.Announcement,

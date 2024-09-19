@@ -66,12 +66,15 @@ import stupidrepo.classuncharted.data.api.Attachment
 import stupidrepo.classuncharted.data.api.Detention
 import stupidrepo.classuncharted.data.api.DetentionAttended
 import stupidrepo.classuncharted.data.api.DetentionType
+import stupidrepo.classuncharted.data.api.Homework
+import stupidrepo.classuncharted.data.api.HomeworkStatus
 import stupidrepo.classuncharted.data.api.Lesson
 import stupidrepo.classuncharted.data.api.LessonPupilBehaviour
 import stupidrepo.classuncharted.data.api.Teacher
 import stupidrepo.classuncharted.data.mine.SavedAccount
 import stupidrepo.classuncharted.managers.LoginManager
 import stupidrepo.classuncharted.ui.activities.AnnouncementActivity
+import stupidrepo.classuncharted.ui.activities.HomeworkActivity
 import stupidrepo.classuncharted.utils.AuthUtils
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -351,7 +354,7 @@ fun AnnouncementCard(announcement: Announcement) {
         }
 
         Text(
-            text = "${announcement.format_timestamp.format(DateTimeFormatter.ofPattern("d MMM uuuu"))} - ${announcement.teacher_name}",
+            text = "${announcement.format_timestamp.format(DateTimeFormatter.ofPattern("d MM yyyy"))} - ${announcement.teacher_name}",
             style = typography.bodySmall
         )
 
@@ -457,6 +460,59 @@ fun AccountCard(account: SavedAccount, buttonText : String = "Switch", onRemove:
             ) {
                 Text("Remove")
             }
+        }
+    }
+}
+
+@Composable
+fun HomeworkCard(homework: Homework) {
+    StatusCard {
+        val context = LocalContext.current
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = homework.title,
+                style = typography.titleMedium,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f)
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .padding(4.dp)
+            )
+
+            Text(
+                "${homework.subject} (${homework.lesson})",
+                style = typography.bodyMedium
+            )
+        }
+
+        Text(
+            text = "Set by ${homework.teacher}",
+            style = typography.bodyMedium
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = "Due: ${homework.format_due.format(DateTimeFormatter.ofPattern("E, dd/MM/yyyy"))}\nIssued: ${homework.format_issued.format(DateTimeFormatter.ofPattern("E, dd/MM/yyyy"))}",
+            style = typography.bodySmall
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        LinkText(text = "View in web browser") {
+            context.startActivity(
+                Intent(context, HomeworkActivity::class.java).apply {
+                    putExtra("hid", homework.id)
+                },
+            )
         }
     }
 }
@@ -608,6 +664,27 @@ fun AttachmentsListPreview() {
         listOf(
             Attachment("file1.pdf", "https://example.com/file1.pdf"),
             Attachment( "file2.pdf", "https://example.com/file2.pdf"),
+        )
+    )
+}
+
+@Preview
+@Composable
+fun HomeworkCardPreview() {
+    HomeworkCard(
+        Homework(
+            0,
+            "Locate maths HW on MathsUnwatched, and complete it.",
+            "Twek",
+            "Mr N Farage",
+            "10C/It1",
+            "IT",
+            "2024-09-11",
+            "2024-09-13",
+            HomeworkStatus(
+                null,
+                "yes"
+            )
         )
     )
 }

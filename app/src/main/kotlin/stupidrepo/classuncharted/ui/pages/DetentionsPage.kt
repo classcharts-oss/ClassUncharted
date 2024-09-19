@@ -17,6 +17,7 @@ import stupidrepo.classuncharted.data.api.Detention
 import stupidrepo.classuncharted.managers.LoginManager
 import stupidrepo.classuncharted.ui.composables.CenteredText
 import stupidrepo.classuncharted.ui.composables.DetentionCard
+import stupidrepo.classuncharted.utils.DateUtils
 import stupidrepo.classuncharted.utils.DialogUtils
 import java.time.LocalDateTime
 
@@ -34,9 +35,9 @@ class DetentionsPage : BradPage {
         ) {
             val now = LocalDateTime.now().toLocalDate()
 
-            val past = detentions.filter { LocalDateTime.parse(it.date, java.time.format.DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ssXXX")).toLocalDate().isBefore(now) }
-            val today = detentions.filter { LocalDateTime.parse(it.date, java.time.format.DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ssXXX")).toLocalDate().equals(now) }
-            val future = detentions.filter { LocalDateTime.parse(it.date, java.time.format.DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ssXXX")).toLocalDate().isAfter(now) }
+            val past = detentions.filter { DateUtils.convertAPIDate(it.date, "uuuu-MM-dd'T'HH:mm:ssXXX").isBefore(now) }
+            val today = detentions.filter { DateUtils.convertAPIDate(it.date, "uuuu-MM-dd'T'HH:mm:ssXXX").equals(now) }
+            val future = detentions.filter { DateUtils.convertAPIDate(it.date, "uuuu-MM-dd'T'HH:mm:ssXXX").isAfter(now) }
 
             item { CenteredText("Future Detentions", style = typography.bodySmall) }
             if(future.isNotEmpty()) {
