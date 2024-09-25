@@ -8,11 +8,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import stupidrepo.classuncharted.MyApplication
 import stupidrepo.classuncharted.R
 import stupidrepo.classuncharted.data.mine.MyChannels
 import stupidrepo.classuncharted.data.mine.NotificationInfo
 import stupidrepo.classuncharted.managers.LoginManager
 import stupidrepo.classuncharted.managers.LoginManager.logInUser
+import stupidrepo.classuncharted.settings.DisableServiceSetting
 import stupidrepo.classuncharted.utils.NotificationUtils.makeNotification
 import stupidrepo.classuncharted.utils.NotificationUtils.sendNotification
 import stupidrepo.classuncharted.utils.caching.CacheUtils
@@ -36,6 +38,12 @@ class NotificationService : Service() {
     private val multipleANNs = abs("multiple_announcements".hashCode())
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val settingsManager = (applicationContext as MyApplication).SettingsManager
+        if(((settingsManager.getSetting(DisableServiceSetting::class)?.value ?: false) as Boolean)) {
+            stopSelf()
+            return START_NOT_STICKY
+        }
+
         startForeground(1, makeNotification(
             applicationContext,
             MyChannels.ServiceChannel,

@@ -1,6 +1,7 @@
 package stupidrepo.classuncharted.ui.theme
 
 import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -33,13 +34,13 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun ClassUnchartedTheme(
-    darkTheme: Boolean = true, // Enforces dark mode, like everything digital should. #enforcedarkmode
+    darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
+            val context = LocalContext.current.applicationContext
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 

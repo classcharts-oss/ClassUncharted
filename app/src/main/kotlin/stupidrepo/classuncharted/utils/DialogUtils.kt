@@ -1,6 +1,8 @@
 package stupidrepo.classuncharted.utils
 
 import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.ComposeView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +46,15 @@ object DialogUtils {
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                .show()
+        }
+    }
+
+    fun showComposableDialog(context: Context, dismissButton: String = "Close", composable: @Composable () -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            MaterialAlertDialogBuilder(context)
+                .setPositiveButton(dismissButton) { dialog, _ -> dialog.dismiss() }
+                .setView(ComposeView(context).apply { setContent { composable() } })
                 .show()
         }
     }

@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Assessment
 import androidx.compose.material.icons.outlined.Today
 import androidx.compose.material.icons.outlined.WorkOutline
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,16 +45,22 @@ import stupidrepo.classuncharted.managers.LoginManager
 import stupidrepo.classuncharted.service.NotificationService
 import stupidrepo.classuncharted.ui.activities.SettingsActivity
 import stupidrepo.classuncharted.ui.composables.AndroidAnnoyance
+import stupidrepo.classuncharted.ui.modal.AccountDialog
 import stupidrepo.classuncharted.ui.pages.ActivityPage
 import stupidrepo.classuncharted.ui.pages.AnnouncementsPage
 import stupidrepo.classuncharted.ui.pages.BradPage
 import stupidrepo.classuncharted.ui.pages.DetentionsPage
 import stupidrepo.classuncharted.ui.pages.HomeworkPage
 import stupidrepo.classuncharted.ui.pages.TimetablePage
+import stupidrepo.classuncharted.ui.theme.ClassUnchartedTheme
 
 val selectedTabIndex = mutableIntStateOf(0) // we put this here so that when we rotate the screen, the selected tab doesn't change 🙄
 
 class HomeActivity : FragmentActivity() {
+    data class SimpleTabItem(
+        val title: String,
+    )
+
     data class TabItem(
         val title: String,
         val icon: ImageVector,
@@ -77,16 +84,16 @@ class HomeActivity : FragmentActivity() {
             page = HomeworkPage()
         ),
         TabItem(
-            title = "Announcements",
-            icon = Icons.AutoMirrored.Outlined.Announcement,
-            selectedIcon = Icons.AutoMirrored.Filled.Announcement,
-            page = AnnouncementsPage(),
-        ),
-        TabItem(
             title = "Timetable",
             icon = Icons.Outlined.Today,
             selectedIcon = Icons.Filled.Today,
             page = TimetablePage()
+        ),
+        TabItem(
+            title = "Announcements",
+            icon = Icons.AutoMirrored.Outlined.Announcement,
+            selectedIcon = Icons.AutoMirrored.Filled.Announcement,
+            page = AnnouncementsPage(),
         ),
         TabItem(
             title = "Activity",
@@ -115,79 +122,106 @@ class HomeActivity : FragmentActivity() {
         refreshTab(selectedTabIndex.intValue)
 
         setContent {
-            AndroidAnnoyance(topBar = {
-                TopAppBar(
-                    title = {
-                        val loggedInAsText = buildAnnotatedString {
-                            append("Logged in as ${LoginManager.user?.name}.")
-                            append(" ")
+            ClassUnchartedTheme {
+                AndroidAnnoyance(topBar = {
+                    TopAppBar(
+                        title = {
+                            val loggedInAsText = buildAnnotatedString {
+                                append("Logged in as ${LoginManager.user?.name}.")
+                                append(" ")
 
-                            pushStringAnnotation(tag = "Clickable", annotation = "NotYou")
-                            withStyle(
-                                style = SpanStyle(
-                                    textDecoration = TextDecoration.Underline,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            ) {
-                                append("Not you?")
+                                pushStringAnnotation(tag = "Clickable", annotation = "NotYou")
+                                withStyle(
+                                    style = SpanStyle(
+                                        textDecoration = TextDecoration.Underline,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                ) {
+                                    append("Not you?")
+                                }
                             }
-                        }
 
-                        Column {
-                            Text(tabItems[selectedTabIndex.intValue].title, style = typography.titleMedium)
-                            ClickableText(
-                                text = loggedInAsText,
-                                style = typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurface),
-                                onClick = { offset ->
-                                    loggedInAsText.getStringAnnotations(
-                                        tag = "Clickable",
-                                        start = offset,
-                                        end = offset
-                                    ).firstOrNull()?.let {
-                                        if (it.item == "NotYou") {
-                                            LoginManager.logOutUser(this@HomeActivity)
+                            Column {
+                                Text(
+                                    tabItems[selectedTabIndex.intValue].title,
+                                    style = typography.titleMedium
+                                )
+                                ClickableText(
+                                    text = loggedInAsText,
+                                    style = typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurface),
+                                    onClick = { offset ->
+                                        loggedInAsText.getStringAnnotations(
+                                            tag = "Clickable",
+                                            start = offset,
+                                            end = offset
+                                        ).firstOrNull()?.let {
+                                            if (it.item == "NotYou") {
+                                                LoginManager.logOutUser(this@HomeActivity)
 
-                                            startActivity(
-                                                Intent(this@HomeActivity, MainActivity::class.java)
-                                                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                                            )
+                                                startActivity(
+                                                    Intent(
+                                                        this@HomeActivity,
+                                                        MainActivity::class.java
+                                                    )
+                                                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                )
+                                            }
                                         }
                                     }
+                                )
+                            }
+                        },
+                        actions = {
+                            // Account switcher button
+                            IconButton(onClick = {
+                                AccountDialog().apply {
+                                    show(supportFragmentManager, "AccountSheet")
                                 }
-                            )
+                            }) {
+                                Icon(Icons.Rounded.AccountCircle, contentDescription = "Accounts")
+                            }
+
+                            // Settings button
+                            IconButton(onClick = {
+                                startActivity(
+                                    Intent(
+                                        this@HomeActivity,
+                                        SettingsActivity::class.java
+                                    )
+                                )
+                            }) {
+                                Icon(Icons.Rounded.Settings, contentDescription = "Settings")
+                            }
                         }
-                    },
-                    actions = {
-                        IconButton(onClick = {
-                            startActivity(Intent(this@HomeActivity, SettingsActivity::class.java))
-                        }) {
-                            Icon(Icons.Rounded.Settings, contentDescription = "Settings")
+                    )
+                }, bottomBar = {
+                    NavigationBar {
+                        tabItems.forEachIndexed { index, tabItem ->
+                            NavigationBarItem(onClick = {
+                                selectedTabIndex.intValue = index
+                                refreshTab(index)
+                            }, icon = {
+                                Icon(
+                                    imageVector =
+                                    if (selectedTabIndex.intValue == index)
+                                        tabItem.selectedIcon
+                                    else tabItem.icon,
+                                    contentDescription = tabItem.title
+                                )
+                            }, selected = selectedTabIndex.intValue == index, label = {
+                                Text(tabItem.title, style = typography.bodySmall)
+                            })
                         }
                     }
-                )
-            }, bottomBar = {
-                NavigationBar {
-                    tabItems.forEachIndexed { index, tabItem ->
-                        NavigationBarItem(onClick = {
-                            selectedTabIndex.intValue = index
-                            refreshTab(index)
-                        }, icon = {
-                            Icon(
-                                imageVector =
-                                if (selectedTabIndex.intValue == index)
-                                    tabItem.selectedIcon
-                                else tabItem.icon,
-                                contentDescription = tabItem.title
-                            )
-                        }, selected = selectedTabIndex.intValue == index, label = {
-                            Text(tabItem.title, style = typography.bodySmall)
-                        })
+                }) {
+                    Column {
+                        tabItems[selectedTabIndex.intValue].page.Content(
+                            Modifier.padding(8.dp),
+                            this@HomeActivity
+                        )
                     }
-                }
-            }) {
-                Column {
-                    tabItems[selectedTabIndex.intValue].page.Content(Modifier.padding(8.dp), this@HomeActivity)
+
                 }
             }
         }

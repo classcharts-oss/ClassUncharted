@@ -33,7 +33,7 @@ import stupidrepo.classuncharted.MyApplication
 import stupidrepo.classuncharted.data.api.Homework
 import stupidrepo.classuncharted.managers.LoginManager
 import stupidrepo.classuncharted.managers.SettingsManager
-import stupidrepo.classuncharted.settings.ZoomEnabledSetting
+import stupidrepo.classuncharted.settings.ZoomControlsEnabledSetting
 import stupidrepo.classuncharted.ui.composables.AndroidAnnoyance
 import stupidrepo.classuncharted.utils.DialogUtils
 import java.net.URLEncoder
@@ -99,7 +99,7 @@ fun FullSizeHomework(homework: Homework) {
 
     AndroidView(factory = {
         WebView(it).apply {
-            settings.builtInZoomControls = (settingsManager.getSetting(ZoomEnabledSetting::class)?.value ?: true) as Boolean
+            settings.builtInZoomControls = (settingsManager.getSetting(ZoomControlsEnabledSetting::class)?.value ?: true) as Boolean
             settings.javaScriptEnabled = true
             Log.i("WV", "FullSizeHomework: ${CookieManager.getInstance().getCookie("www.classcharts.com")}")
         }

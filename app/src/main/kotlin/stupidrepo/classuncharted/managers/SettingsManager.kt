@@ -2,8 +2,8 @@ package stupidrepo.classuncharted.managers
 
 import android.content.Context
 import android.util.Log
+import stupidrepo.classuncharted.settings.MySettings.SETTINGS
 import stupidrepo.classuncharted.settings.models.Category
-import stupidrepo.classuncharted.settings.models.MySettings.SETTINGS
 import stupidrepo.classuncharted.settings.models.Setting
 
 class SettingsManager(context: Context) {

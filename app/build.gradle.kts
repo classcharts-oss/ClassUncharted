@@ -28,7 +28,9 @@ android {
 
         getCommitHash().let { commitHash ->
             versionName = commitHash
-            versionCode = 1
+            versionCode = 2
+
+            logger.log(LogLevel.WARN, "Version name: $versionName")
         }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -39,13 +41,6 @@ android {
     }
 
     buildTypes {
-        debug {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
         release {
             isMinifyEnabled = true
             proguardFiles(
@@ -53,6 +48,13 @@ android {
                 "proguard-rules.pro"
             )
         }
+//        debug {
+//            isMinifyEnabled = true
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
     }
 
     compileOptions {

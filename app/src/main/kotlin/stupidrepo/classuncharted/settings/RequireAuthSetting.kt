@@ -6,7 +6,7 @@ import stupidrepo.classuncharted.settings.models.Setting
 import stupidrepo.classuncharted.utils.AuthUtils
 
 class RequireAuthSetting : Setting(MyCategories.SECURITY, "require_auth", true) {
-    override fun onClick(context: Context, newValue: Any) {
+    override fun onUIChangedValue(context: Context, newValue: Any) {
         if(newValue == false) {
             AuthUtils.showBiometricPrompt(context, {
                 value = newValue
@@ -17,6 +17,6 @@ class RequireAuthSetting : Setting(MyCategories.SECURITY, "require_auth", true) 
 
         value = newValue
 
-        super.onClick(context, newValue)
+        super.onUIChangedValue(context, newValue)
     }
 }

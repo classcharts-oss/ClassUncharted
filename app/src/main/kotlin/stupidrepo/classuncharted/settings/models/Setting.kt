@@ -9,7 +9,7 @@ import stupidrepo.classuncharted.MyApplication
 open class Setting(val category: Category, val key: String, val defaultValue: Any) {
     var value by mutableStateOf(defaultValue)
 
-    open fun onClick(context: Context, newValue: Any) {
+    open fun onUIChangedValue(context: Context, newValue: Any) {
         (context.applicationContext as MyApplication).SettingsManager.saveSetting(this)
     }
 }

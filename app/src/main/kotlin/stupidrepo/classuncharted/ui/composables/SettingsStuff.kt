@@ -64,7 +64,7 @@ fun BooleanCard (
         val context = LocalContext.current
 
         Switch(checked = (setting.value) as Boolean, onCheckedChange = {
-            setting.onClick(context, it)
+            setting.onUIChangedValue(context, it)
         })
     }
 }

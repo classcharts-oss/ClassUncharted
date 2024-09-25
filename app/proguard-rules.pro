@@ -23,8 +23,8 @@
 -keep @androidx.room.* class *
 -keep @androidx.room.* interface *
 -dontshrink
--dontobfuscate
--dontoptimize
+#-dontobfuscate
+#-dontoptimize
 -dontusemixedcaseclassnames
 -dontnote *
 -dontwarn *

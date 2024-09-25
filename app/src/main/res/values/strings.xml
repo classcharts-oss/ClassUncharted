@@ -13,4 +13,7 @@
 
     <string name="settings.setting.zoom_enabled">Enable Zooming</string>
     <string name="settings.setting.zoom_enabled.description">Enables zooming in and out of web content (e.g. announcements).</string>
+
+    <string name="settings.setting.disable_service">Disable Background Service</string>
+    <string name="settings.setting.disable_service.description">Turning this on will stop ClassUncharted from running in the background, which will disable notifications.</string>
 </resources>

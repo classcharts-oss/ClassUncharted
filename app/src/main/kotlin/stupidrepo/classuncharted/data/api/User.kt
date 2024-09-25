@@ -2,6 +2,7 @@ package stupidrepo.classuncharted.data.api
 
 import stupidrepo.classuncharted.data.mine.Account
 import stupidrepo.classuncharted.managers.APIManager
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -34,10 +35,10 @@ data class User (
         )
     }
 
-    fun getLessons(): List<Lesson> {
+    fun getLessons(date: LocalDate): List<Lesson> {
         return APIManager.GET<Lesson>(
             "timetable",
-            listOf("date=" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("uuuu-MM-dd")))
+            listOf("date=" + date.format(DateTimeFormatter.ofPattern("uuuu-MM-dd")))
         )
     }
 

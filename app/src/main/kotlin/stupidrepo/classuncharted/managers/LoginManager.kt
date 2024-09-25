@@ -56,7 +56,7 @@ object LoginManager {
         return null
     }
 
-    private fun addUserToSavedLogins(context: Context) {
+    private fun addUserToSavedLogins(context: Context): SavedAccount {
         val loginDetails = getLoginDetails(context)!!
 
         val sharedPreferences = context.getSharedPreferences(
@@ -75,18 +75,20 @@ object LoginManager {
             throw Exception("Account already saved.")
         }
 
-        savedAccounts.add(SavedAccount(loginDetails, user!!.name))
+        val acc = SavedAccount(loginDetails, user!!.name)
+        savedAccounts.add(acc)
         sharedPreferences.edit().putString(SAVED_LOGINS_KEY, JSONUtils.gson.toJson(savedAccounts)).apply()
 
         Log.d(TAG, "addUserToSavedLogins: Account saved.")
+
+        return acc
     }
 
-    fun addUserToSavedLogins(context: Context, onComplete: () -> Unit, onError: (String) -> Unit) {
+    fun addUserToSavedLogins(context: Context, onComplete: (SavedAccount) -> Unit, onError: (String) -> Unit) {
         runBlocking {
             launch(Dispatchers.IO) {
                 try {
-                    addUserToSavedLogins(context)
-                    onComplete()
+                    onComplete(addUserToSavedLogins(context))
                 } catch (e: Exception) {
                     onError(e.message!!)
                 }

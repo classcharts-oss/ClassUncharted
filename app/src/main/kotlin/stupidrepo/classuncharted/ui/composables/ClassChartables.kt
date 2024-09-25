@@ -25,8 +25,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.RemoveCircle
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
@@ -381,86 +384,121 @@ fun AccountCard(account: SavedAccount, buttonText : String = "Switch", onRemove:
     val enabled = remember { mutableStateOf(true) }
     val shown = remember { mutableStateOf(false) }
 
-    StatusCard(false) {
-        Text(
-            text = account.name,
-            style = typography.titleMedium
-        )
-
-        ClickableText(
-            text = buildAnnotatedString {
-                if(!shown.value) {
-                    withStyle(
-                        SpanStyle(
-                            textDecoration = TextDecoration.Underline,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        append("Show ClassCharts Code")
-                    }
-                } else {
-                    withStyle(SpanStyle(MaterialTheme.colorScheme.onSurface)) {
-                        append(account.account.code)
-                        append(" ")
-                    }
-
-                    withStyle(SpanStyle(
-                        textDecoration = TextDecoration.Underline,
-                        color = MaterialTheme.colorScheme.primary
-                    )) {
-                        append("Copy & Hide")
-                    }
-                }
-            },
-            style = typography.bodyMedium,
-            onClick = {
-                if(!shown.value) {
-                    AuthUtils.showBiometricPrompt(context, { shown.value = true }, "Reveal Code", "You need to authenticate to\nreveal this login code.")
-                } else {
-                    shown.value = false
-
-                    clipboardManager.setText(AnnotatedString(account.account.code))
-                    Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show()
-                }
+    StatusCard(account.account != LoginManager.user?.account, onClick = {
+        AuthUtils.showBiometricPrompt(context, {
+            CoroutineScope(Dispatchers.Main).launch {
+                LoginManager.switchAccount(
+                    context,
+                    account,
+                    {},
+                    { enabled.value = true })
+                enabled.value = false
             }
-        )
+        }, buttonText, "You need to authenticate to ${buttonText.lowercase()} to this account.")
+    }) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                Text(
+                    text = account.name,
+                    style = typography.titleMedium
+                )
 
-        Spacer(modifier = Modifier.height(8.dp))
+                ClickableText(
+                    text = buildAnnotatedString {
+                        if (!shown.value) {
+                            withStyle(
+                                SpanStyle(
+                                    textDecoration = TextDecoration.Underline,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            ) {
+                                append("Show ClassCharts Code")
+                            }
+                        } else {
+                            withStyle(SpanStyle(MaterialTheme.colorScheme.onSurface)) {
+                                append(account.account.code)
+                                append(" ")
+                            }
 
-        Row {
-            Button(
-                onClick = {
-                    AuthUtils.showBiometricPrompt(context, {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            LoginManager.switchAccount(context, account, {}, { enabled.value = true })
-                            enabled.value = false
+                            withStyle(
+                                SpanStyle(
+                                    textDecoration = TextDecoration.Underline,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            ) {
+                                append("Copy & Hide")
+                            }
                         }
-                    }, buttonText, "You need to authenticate to ${buttonText.lowercase()} to this account.")
-                },
-                enabled = enabled.value && account.account != LoginManager.user?.account,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(.5f)
-            ) {
-                Text(buttonText)
+                    },
+                    style = typography.bodyMedium,
+                    onClick = {
+                        if (!shown.value) {
+                            AuthUtils.showBiometricPrompt(
+                                context,
+                                { shown.value = true },
+                                "Reveal Code",
+                                "You need to authenticate to\nreveal this login code."
+                            )
+                        } else {
+                            shown.value = false
+
+                            clipboardManager.setText(AnnotatedString(account.account.code))
+                            Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                )
             }
 
             Spacer(modifier = Modifier.width(8.dp))
-
-            Button(
-                onClick = {
+            if(account.account == LoginManager.user?.account) {
+                Icon(Icons.Rounded.CheckCircle, "Current Account", tint = colorResource(id = R.color.green))
+            } else {
+                Icon(Icons.Rounded.RemoveCircle, "Remove", tint = colorResource(id = R.color.red), modifier = Modifier.clickable {
                     AuthUtils.showBiometricPrompt(context, {
-                        onRemove()
+                        LoginManager.removeUserFromSavedLogins(context, account.account, {
+                            onRemove()
+                        }, { enabled.value = true })
                     }, "Remove Account", "You need to authenticate to remove this account.")
-                },
-                enabled = enabled.value && account.account != LoginManager.user?.account,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(.5f)
-            ) {
-                Text("Remove")
+                })
             }
         }
+
+//        Spacer(modifier = Modifier.height(8.dp))
+
+//        Row {
+//            Button(
+//                onClick = {
+//                    AuthUtils.showBiometricPrompt(context, {
+//                        CoroutineScope(Dispatchers.Main).launch {
+//                            LoginManager.switchAccount(context, account, {}, { enabled.value = true })
+//                            enabled.value = false
+//                        }
+//                    }, buttonText, "You need to authenticate to ${buttonText.lowercase()} to this account.")
+//                },
+//                enabled = enabled.value && ,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .weight(.5f)
+//            ) {
+//                Text(buttonText)
+//            }
+//
+//            Spacer(modifier = Modifier.width(8.dp))
+
+//            Button(
+//                onClick = {
+//                    AuthUtils.showBiometricPrompt(context, {
+//                        onRemove()
+//                    }, "Remove Account", "You need to authenticate to remove this account.")
+//                },
+//                enabled = enabled.value && account.account != LoginManager.user?.account,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .weight(.5f)
+//            ) {
+//                Text("Remove")
+//            }
+//        }
     }
 }
 
