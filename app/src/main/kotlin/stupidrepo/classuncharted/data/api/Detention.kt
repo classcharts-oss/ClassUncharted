@@ -7,6 +7,7 @@ import stupidrepo.classuncharted.data.api.converters.DetentionAttendedConverter
 import stupidrepo.classuncharted.data.api.converters.DetentionTypeConverter
 import stupidrepo.classuncharted.data.api.converters.LessonPupilBehaviourConverter
 import stupidrepo.classuncharted.data.api.converters.TeacherConverter
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
@@ -42,5 +43,10 @@ class Detention(
             } catch (e: Exception) {
                 return date
             }
+        }
+
+    val local_date: LocalDate
+        get() {
+            return LocalDate.parse(date, java.time.format.DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ssXXX"))
         }
 }

@@ -22,7 +22,6 @@ import stupidrepo.classuncharted.managers.LoginManager
 import stupidrepo.classuncharted.ui.composables.BradTabSwitcher
 import stupidrepo.classuncharted.ui.composables.CenteredText
 import stupidrepo.classuncharted.ui.composables.DetentionCard
-import stupidrepo.classuncharted.utils.DateUtils
 import stupidrepo.classuncharted.utils.DialogUtils
 import java.time.LocalDateTime
 
@@ -44,22 +43,13 @@ class DetentionsPage : BradPage {
             val now = LocalDateTime.now().toLocalDate()
 
             val past = detentions.filter {
-                DateUtils.convertAPIDate(
-                    it.date,
-                    "uuuu-MM-dd'T'HH:mm:ssXXX"
-                ).isBefore(now)
+                it.local_date.isBefore(now)
             }
             val today = detentions.filter {
-                DateUtils.convertAPIDate(
-                    it.date,
-                    "uuuu-MM-dd'T'HH:mm:ssXXX"
-                ) == now
+                it.local_date == now
             }
             val future = detentions.filter {
-                DateUtils.convertAPIDate(
-                    it.date,
-                    "uuuu-MM-dd'T'HH:mm:ssXXX"
-                ).isAfter(now)
+                it.local_date.isAfter(now)
             }
 
             val selected = when (selectedTab) {

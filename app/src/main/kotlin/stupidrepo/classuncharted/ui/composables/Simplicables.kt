@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -102,10 +102,13 @@ fun BradTabSwitcher(
         Modifier
             .fillMaxWidth()
             .background(Color.Transparent)
-            .padding(8.dp),
+            .padding(4.dp),
         contentAlignment = Alignment.Center
     ) {
-        LazyRow(modifier = modifier.background(Color.Transparent)) {
+        LazyRow(
+            modifier
+                .background(Color.Transparent)
+        ) {
             tabs.forEachIndexed { index, tabItem ->
                 val shape = when (index) {
                     0 -> RoundedCornerShape(topStart = 54.dp, bottomStart = 54.dp)
@@ -121,10 +124,10 @@ fun BradTabSwitcher(
                             contentColor = if (selectedTab == index) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
                         ),
                         modifier = Modifier
-                            .wrapContentSize()
-                            .height(31.dp)
+                            .widthIn(min = 10.dp)
+                            .height(32.dp)
                     ) {
-                        Text(tabItem.title, style = MaterialTheme.typography.bodySmall)
+                        Text(tabItem.title, style = MaterialTheme.typography.labelSmall)
                     }
                 }
             }
@@ -134,7 +137,7 @@ fun BradTabSwitcher(
 
 @Preview
 @Composable
-fun HWSwitcherPReview() {
+fun HWSwitcherPreview() {
     Box(modifier = Modifier.fillMaxWidth().height((31 + 16).dp).background(Color.Gray)) {}
 
     BradTabSwitcher(
@@ -156,6 +159,16 @@ fun DTSwitcherPreview() {
             HomeActivity.SimpleTabItem("Today"),
             HomeActivity.SimpleTabItem("Future")
         ),
+        selectedTab = 0,
+        onTabSelected = {}
+    )
+}
+
+@Preview
+@Composable
+fun LongSwitcherPreview() {
+    BradTabSwitcher(
+        tabs = (1..10 step 1).map { HomeActivity.SimpleTabItem(it.toString()) },
         selectedTab = 0,
         onTabSelected = {}
     )
