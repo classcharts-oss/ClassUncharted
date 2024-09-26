@@ -27,4 +27,4 @@
 #-dontoptimize
 #-dontusemixedcaseclassnames
 #-dontnote *
-#-dontwarn *
+-dontwarn *
