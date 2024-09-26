@@ -105,10 +105,7 @@ fun BradTabSwitcher(
             .padding(4.dp),
         contentAlignment = Alignment.Center
     ) {
-        LazyRow(
-            modifier
-                .background(Color.Transparent)
-        ) {
+        LazyRow {
             tabs.forEachIndexed { index, tabItem ->
                 val shape = when (index) {
                     0 -> RoundedCornerShape(topStart = 54.dp, bottomStart = 54.dp)
@@ -138,8 +135,6 @@ fun BradTabSwitcher(
 @Preview
 @Composable
 fun HWSwitcherPreview() {
-    Box(modifier = Modifier.fillMaxWidth().height((31 + 16).dp).background(Color.Gray)) {}
-
     BradTabSwitcher(
         tabs = listOf(
             HomeActivity.SimpleTabItem("To-do"),
@@ -168,7 +163,7 @@ fun DTSwitcherPreview() {
 @Composable
 fun LongSwitcherPreview() {
     BradTabSwitcher(
-        tabs = (1..10 step 1).map { HomeActivity.SimpleTabItem(it.toString()) },
+        tabs = (1..10 step 1).map { HomeActivity.SimpleTabItem("Tab Item $it") },
         selectedTab = 0,
         onTabSelected = {}
     )
