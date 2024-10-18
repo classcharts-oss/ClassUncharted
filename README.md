@@ -16,4 +16,4 @@ A remake of ClassCharts' (awful) Android 'app', but in native Android UI using J
   - [ ] Homework
 - [x] Account switcher
   - [ ] Reworked account switcher
-- Change date ranges of certain tabs
+- [ ] Change date ranges of certain tabs
