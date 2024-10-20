@@ -6,13 +6,18 @@ import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.MissingFieldException
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.FormBody
 import stupidrepo.classuncharted.HomeActivity
+import stupidrepo.classuncharted.JSON
 import stupidrepo.classuncharted.data.api.User
 import stupidrepo.classuncharted.data.mine.Account
 import stupidrepo.classuncharted.data.mine.SavedAccount
 import stupidrepo.classuncharted.service.NotificationService
-import stupidrepo.classuncharted.utils.JSONUtils
 
 private const val SAVED_LOGINS_PREFS = "saved_logins"
 private const val CURRENT_LOGIN_PREFS = "current_login"
@@ -34,42 +39,41 @@ object LoginManager {
         val saved: String? = sharedPreferences.getString(SAVED_LOGINS_KEY, null)
 
         return if(saved != null) {
-            JSONUtils.gson.fromJson(saved, Array<SavedAccount>::class.java)
-                .toList()
+            JSON.decodeFromString<List<SavedAccount>>(saved)
         } else {
             listOf()
         }
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     fun getLoginDetails(context: Context): Account? {
         val sharedPreferences = context.getSharedPreferences(
             CURRENT_LOGIN_PREFS,
             Context.MODE_PRIVATE
         )
 
-        val current: String? = sharedPreferences.getString(CURRENT_LOGIN_KEY, null)
+        var current: Account? = null
 
-        if (current != null) {
-            return JSONUtils.gson.fromJson(current, Account::class.java)
+        try {
+            sharedPreferences.getString(CURRENT_LOGIN_KEY, null)?.let {
+                current = JSON.decodeFromString<Account>(it)
+            }
+        } catch (e: MissingFieldException) {
+            logOutUser(context)
         }
 
-        return null
+        return current
     }
 
     private fun addUserToSavedLogins(context: Context): SavedAccount {
-        val loginDetails = getLoginDetails(context)!!
+        val loginDetails = getLoginDetails(context) ?: throw Exception("User not logged in.")
 
         val sharedPreferences = context.getSharedPreferences(
             SAVED_LOGINS_PREFS,
             Context.MODE_PRIVATE
         )
 
-        val saved: String? = sharedPreferences.getString(SAVED_LOGINS_KEY, null)
-
-        val savedAccounts = if(saved != null)
-            JSONUtils.gson.fromJson(saved, Array<SavedAccount>::class.java)
-                .toMutableList()
-        else mutableListOf()
+        val savedAccounts = getSavedLogins(context).toMutableList()
 
         if(savedAccounts.any { it.account == loginDetails }) {
             throw Exception("Account already saved.")
@@ -77,7 +81,7 @@ object LoginManager {
 
         val acc = SavedAccount(loginDetails, user!!.name)
         savedAccounts.add(acc)
-        sharedPreferences.edit().putString(SAVED_LOGINS_KEY, JSONUtils.gson.toJson(savedAccounts)).apply()
+        sharedPreferences.edit().putString(SAVED_LOGINS_KEY, JSON.encodeToString(savedAccounts)).apply()
 
         Log.d(TAG, "addUserToSavedLogins: Account saved.")
 
@@ -102,15 +106,10 @@ object LoginManager {
             Context.MODE_PRIVATE
         )
 
-        val saved: String? = sharedPreferences.getString(SAVED_LOGINS_KEY, null)
-
-        val savedAccounts = if(saved != null)
-            JSONUtils.gson.fromJson(saved, Array<SavedAccount>::class.java)
-                .toMutableList()
-        else mutableListOf()
+        val savedAccounts = getSavedLogins(context).toMutableList()
 
         savedAccounts.removeIf { it.account == account }
-        sharedPreferences.edit().putString(SAVED_LOGINS_KEY, JSONUtils.gson.toJson(savedAccounts)).apply()
+        sharedPreferences.edit().putString(SAVED_LOGINS_KEY, JSON.encodeToString(savedAccounts)).apply()
 
         Log.d(TAG, "removeUserFromSavedLogins: Account removed.")
     }
@@ -153,35 +152,22 @@ object LoginManager {
         runBlocking {
             launch(Dispatchers.IO) {
                 try {
-                    APIManager.POST("login", body)?.let { response ->
-                        if (response.has("error")) {
-                            onError(response.get("error").asString)
-                            onEnd()
-
-                            return@launch
-                        }
-
+                    APIManager.POST("login", body).let { response ->
                         context.getSharedPreferences(CURRENT_LOGIN_PREFS, Context.MODE_PRIVATE)
                             .edit().apply {
-                                putString(CURRENT_LOGIN_KEY, JSONUtils.gson.toJson(account))
-
+                                putString(CURRENT_LOGIN_KEY, JSON.encodeToString(account))
                                 apply()
                             }
 
-                        user = JSONUtils.gson.fromJson(
-                            response.get("data").asJsonObject,
-                            User::class.java
-                        )
-                        user?.session_id =
-                            response.get("meta").asJsonObject.get("session_id").asString
+                        user = JSON.decodeFromString<User>(response.jsonObject["data"].toString())
+                        user?.session_id = response.jsonObject["meta"]!!.jsonObject["session_id"]?.jsonPrimitive?.content
                         user?.account = account
 
                         onComplete()
                         onEnd()
-                    } ?: run {
-                        onError("Couldn't log in. Check your internet connection.")
                     }
                 } catch (e: Exception) {
+                    Log.e(TAG, "logInUser: Error!")
                     onError(e.message!!)
                     onEnd()
                 }
@@ -196,7 +182,6 @@ object LoginManager {
         ).edit().clear().apply()
 
         user = null
-
         context.stopService(Intent(context, NotificationService::class.java))
     }
 
@@ -205,7 +190,7 @@ object LoginManager {
             CURRENT_LOGIN_PREFS,
             Context.MODE_PRIVATE
         ).edit().apply {
-            putString(CURRENT_LOGIN_KEY, JSONUtils.gson.toJson(account.account))
+            putString(CURRENT_LOGIN_KEY, JSON.encodeToString(account.account))
         }.apply()
 
         logInUser(context, account.account, {

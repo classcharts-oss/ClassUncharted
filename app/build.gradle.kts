@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp") version "2.0.10-1.0.24"
+    kotlin("plugin.serialization")
 }
 
 val getCommitHash = { ->
@@ -49,11 +50,11 @@ android {
             )
         }
         debug {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+//            isMinifyEnabled = true
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
         }
     }
 
@@ -121,4 +122,6 @@ dependencies {
     implementation(libs.gson)
 
     implementation(libs.androidx.core.ktx)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
 }

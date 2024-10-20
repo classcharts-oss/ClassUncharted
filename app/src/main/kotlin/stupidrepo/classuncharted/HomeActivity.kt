@@ -5,8 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Announcement
@@ -26,11 +29,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.SpanStyle
@@ -45,6 +47,8 @@ import stupidrepo.classuncharted.managers.LoginManager
 import stupidrepo.classuncharted.service.NotificationService
 import stupidrepo.classuncharted.ui.activities.SettingsActivity
 import stupidrepo.classuncharted.ui.composables.AndroidAnnoyance
+import stupidrepo.classuncharted.ui.composables.IconTabSwitcher
+import stupidrepo.classuncharted.ui.composables.LoadingIndicator
 import stupidrepo.classuncharted.ui.modal.AccountDialog
 import stupidrepo.classuncharted.ui.pages.ActivityPage
 import stupidrepo.classuncharted.ui.pages.AnnouncementsPage
@@ -196,24 +200,24 @@ class HomeActivity : FragmentActivity() {
                         }
                     )
                 }, bottomBar = {
-                    NavigationBar {
-                        tabItems.forEachIndexed { index, tabItem ->
-                            NavigationBarItem(onClick = {
-                                selectedTabIndex.intValue = index
-                                refreshTab(index)
-                            }, icon = {
-                                Icon(
-                                    imageVector =
-                                    if (selectedTabIndex.intValue == index)
-                                        tabItem.selectedIcon
-                                    else tabItem.icon,
-                                    contentDescription = tabItem.title
-                                )
-                            }, selected = selectedTabIndex.intValue == index, label = {
-                                Text(tabItem.title, style = typography.bodySmall)
-                            })
-                        }
-                    }
+//                    NavigationBar {
+//                        tabItems.forEachIndexed { index, tabItem ->
+//                            NavigationBarItem(onClick = {
+//                                selectedTabIndex.intValue = index
+//                                refreshTab(index)
+//                            }, icon = {
+//                                Icon(
+//                                    imageVector =
+//                                    if (selectedTabIndex.intValue == index)
+//                                        tabItem.selectedIcon
+//                                    else tabItem.icon,
+//                                    contentDescription = tabItem.title
+//                                )
+//                            }, selected = selectedTabIndex.intValue == index, label = {
+//                                Text(tabItem.title, style = typography.bodySmall)
+//                            })
+//                        }
+//                    }
                 }) {
                     Column {
                         tabItems[selectedTabIndex.intValue].page.Content(
@@ -221,7 +225,26 @@ class HomeActivity : FragmentActivity() {
                             this@HomeActivity
                         )
                     }
+                    Box(
+                        modifier = Modifier.safeContentPadding().fillMaxSize(),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        IconTabSwitcher(
+                            icons = tabItems.map {
+                                if (selectedTabIndex.intValue == tabItems.indexOf(
+                                        it
+                                    )
+                                ) it.selectedIcon else it.icon
+                            },
+                            selectedTab = selectedTabIndex.intValue,
+                            onTabSelected = {
+                                selectedTabIndex.intValue = it
+                                refreshTab(it)
+                            }
+                        )
+                    }
 
+                    LoadingIndicator(size = 12.dp)
                 }
             }
         }

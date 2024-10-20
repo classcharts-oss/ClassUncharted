@@ -22,5 +22,11 @@
 -keep class * extends androidx.room.RoomDatabase
 -keep @androidx.room.* class *
 -keep @androidx.room.* interface *
+
+-keepclassmembers class stupidrepo.classuncharted.data.* {
+  <fields>;
+  <methods>;
+}
+
 -dontshrink # Prevent shrinking of classes because it breaks GSON
 -dontwarn * # Prevent warnings for missing classes (idek what that means but it stops the warnings lol)

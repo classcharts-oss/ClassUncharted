@@ -1,15 +1,15 @@
 package stupidrepo.classuncharted.managers
 
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
 import okhttp3.Dispatcher
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import stupidrepo.classuncharted.utils.JSONUtils
+import stupidrepo.classuncharted.JSON
+import stupidrepo.classuncharted.setContentLoading
 import java.time.Duration
 
 
@@ -33,16 +33,23 @@ object APIManager {
         .writeTimeout(TIMEOUT)
         .build()
 
-    suspend fun POST(endpoint: String, body: FormBody) : JsonObject? {
+    fun POST(endpoint: String, body: FormBody, withAuth: Boolean = false) : JsonElement {
         val request = Request.Builder()
             .url(API_URL + endpoint)
             .header("Content-Type", "application/x-www-form-urlencoded")
             .header("Accept", "application/json")
             .header("User-Agent", USER_AGENT)
+            .header("Authorization", if(withAuth) "Basic ${LoginManager.user?.session_id}" else "")
             .post(body)
             .build()
 
-        return DoRequest(request)
+        val response = DoRequest(request)
+
+        if(response.jsonObject.containsKey("error")) {
+            throw Exception("POST failed! ClassCharts services responded with the following message: ${response.jsonObject["error"]}")
+        }
+
+        return response
     }
 
     inline fun <reified T> GET(endpoint: String) : List<T> {
@@ -55,37 +62,40 @@ object APIManager {
             .build()
 
         val response = DoRequest(request)
-        val type = TypeToken.getParameterized(List::class.java, T::class.java).type
 
-        val json: List<T>? = JSONUtils.gson.fromJson(
-            response?.get("data"),
-            type
-        )
+        if(response.jsonObject.containsKey("error")) {
+            throw Exception("ClassCharts services responded with the following message: ${response.jsonObject["error"]}")
+        }
 
-        if (response != null && json != null)
-            return json
+        val json: List<T> = JSON.decodeFromString<List<T>>(response.jsonObject["data"].toString())
 
-        return listOf()
+        return json
     }
 
     inline fun <reified T> GET(endpoint: String, pathParameters: List<String>) : List<T> {
         return GET(endpoint + "?" + pathParameters.joinToString("&"))
     }
 
-    fun DoRequest(request: Request): JsonObject? {
+    fun DoRequest(request: Request): JsonElement {
+        setContentLoading(true)
+
         return runBlocking(Dispatchers.IO) {
-            val response = OKHTTP_CLIENT.newCall(request).execute()
+            try {
+                val response = OKHTTP_CLIENT.newCall(request).execute()
 
-            if (response.code != 200) {
-                throw Exception("APIManager: Request failed with code ${response.code}")
+                if (response.code != 200) {
+                    throw Exception("APIManager: Request failed with code ${response.code}")
+                }
+
+                val body = response.body.string()
+                val json = JSON.parseToJsonElement(body)
+
+                response.close()
+
+                return@runBlocking json
+            } finally {
+                setContentLoading(false)
             }
-
-            val body = response.body.string()
-            val json = JsonParser.parseString(body).asJsonObject
-
-            response.close()
-
-            return@runBlocking json
         }
     }
 }

@@ -11,7 +11,7 @@ workRuntimeKtxVersion = "2.9.1"
 roomCommonVersion = "2.6.1"
 roomKtxVersion = "2.6.1"
 kotlinVersion = "2.0.10"
-webkitVersion = "1.12.0"
+webkitVersion = "1.12.1"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }

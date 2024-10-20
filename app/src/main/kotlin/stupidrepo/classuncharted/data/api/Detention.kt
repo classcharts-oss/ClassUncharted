@@ -3,6 +3,8 @@ package stupidrepo.classuncharted.data.api
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import stupidrepo.classuncharted.data.api.converters.DetentionAttendedConverter
 import stupidrepo.classuncharted.data.api.converters.DetentionTypeConverter
 import stupidrepo.classuncharted.data.api.converters.LessonPupilBehaviourConverter
@@ -11,6 +13,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
+@Serializable
 class Detention(
     @PrimaryKey val id: Int,
     val date: String,
@@ -20,7 +23,7 @@ class Detention(
     val location: String,
 
     @TypeConverters(TeacherConverter::class) val teacher: Teacher,
-    @TypeConverters(LessonPupilBehaviourConverter::class) val lesson_pupil_behaviour: LessonPupilBehaviour,
+    @Contextual @TypeConverters(LessonPupilBehaviourConverter::class) val lesson_pupil_behaviour: LessonPupilBehaviour,
     @TypeConverters(DetentionTypeConverter::class) val detention_type: DetentionType? = null,
 
     @TypeConverters(DetentionAttendedConverter::class) val attended: DetentionAttended
