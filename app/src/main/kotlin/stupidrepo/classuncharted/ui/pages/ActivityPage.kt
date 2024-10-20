@@ -22,7 +22,6 @@ import stupidrepo.classuncharted.managers.LoginManager
 import stupidrepo.classuncharted.ui.composables.ActivityCard
 import stupidrepo.classuncharted.ui.composables.CenteredText
 import stupidrepo.classuncharted.utils.DialogUtils
-import stupidrepo.classuncharted.utils.caching.CacheUtils
 import java.time.format.DateTimeFormatter
 
 class ActivityPage : BradPage {
@@ -75,8 +74,6 @@ class ActivityPage : BradPage {
             try {
                 val ourActivities = LoginManager.user?.getActivities() ?: emptyList()
                 activities = ourActivities
-
-                CacheUtils.cacheActivities(ourActivities)
             }
             catch (e: Exception) { DialogUtils.showErrorDialog(activity, e) }
         }

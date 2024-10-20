@@ -2,7 +2,9 @@ package stupidrepo.classuncharted.data.api
 
 import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Attachment(
     val filename: String,
     val url: String

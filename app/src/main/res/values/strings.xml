@@ -14,6 +14,6 @@
     <string name="settings.setting.zoom_enabled">Enable Zooming</string>
     <string name="settings.setting.zoom_enabled.description">Enables zooming in and out of web content (e.g. announcements).</string>
 
-    <string name="settings.setting.disable_service">Disable Background Service</string>
-    <string name="settings.setting.disable_service.description">Turning this on will stop ClassUncharted from running in the background, which will disable notifications.</string>
+    <string name="settings.setting.server_api_url">Server API URL</string>
+    <string name="settings.setting.server_api_url.description">Don\'t touch this if you don\'t know what you\'re doing. Changing this could allow someone to get access to your ClassCharts code/account!\nThis is used for development purposes, so do NOT touch it!</string>
 </resources>

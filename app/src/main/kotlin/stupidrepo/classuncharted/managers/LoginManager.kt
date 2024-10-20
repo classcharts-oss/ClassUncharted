@@ -17,7 +17,6 @@ import stupidrepo.classuncharted.JSON
 import stupidrepo.classuncharted.data.api.User
 import stupidrepo.classuncharted.data.mine.Account
 import stupidrepo.classuncharted.data.mine.SavedAccount
-import stupidrepo.classuncharted.service.NotificationService
 
 private const val SAVED_LOGINS_PREFS = "saved_logins"
 private const val CURRENT_LOGIN_PREFS = "current_login"
@@ -127,7 +126,7 @@ object LoginManager {
         }
     }
 
-    suspend fun logInUser(
+    fun logInUser(
         context: Context,
         account: Account,
         onComplete: () -> Unit,
@@ -182,10 +181,9 @@ object LoginManager {
         ).edit().clear().apply()
 
         user = null
-        context.stopService(Intent(context, NotificationService::class.java))
     }
 
-    suspend fun switchAccount(context: Context, account: SavedAccount, onComplete: () -> Unit, onError: () -> Unit) {
+    fun switchAccount(context: Context, account: SavedAccount, onComplete: () -> Unit, onError: () -> Unit) {
         context.getSharedPreferences(
             CURRENT_LOGIN_PREFS,
             Context.MODE_PRIVATE

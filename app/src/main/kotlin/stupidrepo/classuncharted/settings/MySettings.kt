@@ -4,6 +4,6 @@ object MySettings {
     val SETTINGS = listOf(
         RequireAuthSetting(),
         ZoomControlsEnabledSetting(),
-        DisableServiceSetting(),
+        ServerAPIURLSetting()
     )
 }

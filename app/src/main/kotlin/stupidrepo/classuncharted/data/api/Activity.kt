@@ -18,15 +18,15 @@ data class Activity (
 
     val reason: String,
 
-    val timestamp: String,
+    val timestamp: String = "2010-01-01 01:00:00",
 
-    val lesson_name: String? = "No data.",
-    val teacher_name: String? = "No data.",
+    val lesson_name: String = "No data.",
+    val teacher_name: String = "No data.",
 
-    val detention_date: String? = "0000-00-00",
-    val detention_time: String? = "0000-00-00 00:00:00",
-    val detention_location: String? = "No location.",
-    val detention_type: String? = "No detention type specified."
+    val detention_date: String = "0001-01-01",
+    val detention_time: String = "0001-01-01 01:00:00",
+    val detention_location: String = "No location.",
+    val detention_type: String = "No detention type specified."
 ) {
     val format_timestamp: LocalDateTime
         get() {
@@ -35,6 +35,6 @@ data class Activity (
 
     val format_detention_date: LocalDate
         get() {
-            return DateUtils.convertAPIDate(detention_date!!, "uuuu-MM-dd")
+            return DateUtils.convertAPIDate(detention_date, "uuuu-MM-dd")
         }
 }

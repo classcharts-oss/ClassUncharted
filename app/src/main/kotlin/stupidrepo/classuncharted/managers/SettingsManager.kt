@@ -1,13 +1,33 @@
 package stupidrepo.classuncharted.managers
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import stupidrepo.classuncharted.settings.MySettings.SETTINGS
 import stupidrepo.classuncharted.settings.models.Category
 import stupidrepo.classuncharted.settings.models.Setting
 
-class SettingsManager(context: Context) {
+class SettingsManager private constructor(private val context: Context) {
     private val TAG = "SettingsManager"
+
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        @Volatile
+        private var INSTANCE: SettingsManager? = null
+
+        fun initialize(context: Context) {
+            if (INSTANCE == null) {
+                synchronized(this) {
+                    if (INSTANCE == null) {
+                        INSTANCE = SettingsManager(context.applicationContext)
+                    }
+                }
+            }
+        }
+
+        val instance: SettingsManager
+            get() = INSTANCE ?: throw IllegalStateException("SettingsManager is not initialized, call initialize(context: Context) first.")
+    }
 
     private val sharedPreferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
     fun getSettingsGroupedByCategory(): Map<Category, List<Setting>> {

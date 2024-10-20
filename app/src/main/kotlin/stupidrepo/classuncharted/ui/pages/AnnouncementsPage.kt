@@ -17,7 +17,6 @@ import stupidrepo.classuncharted.managers.LoginManager
 import stupidrepo.classuncharted.ui.composables.AnnouncementCard
 import stupidrepo.classuncharted.ui.composables.CenteredText
 import stupidrepo.classuncharted.utils.DialogUtils
-import stupidrepo.classuncharted.utils.caching.CacheUtils
 
 class AnnouncementsPage : BradPage {
     private val TAG = "AnnouncementsPage"
@@ -40,8 +39,6 @@ class AnnouncementsPage : BradPage {
             try {
                 val ourAnnouncements = LoginManager.user?.getAnnouncements() ?: emptyList()
                 announcements = ourAnnouncements
-
-                CacheUtils.cacheAnnouncements(ourAnnouncements)
             }
             catch (e: Exception) { DialogUtils.showErrorDialog(activity, e) }
         }

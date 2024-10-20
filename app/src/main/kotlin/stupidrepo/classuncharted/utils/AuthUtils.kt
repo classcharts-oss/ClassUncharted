@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.FragmentActivity
-import stupidrepo.classuncharted.MyApplication
+import stupidrepo.classuncharted.managers.SettingsManager
 import stupidrepo.classuncharted.settings.RequireAuthSetting
 
 object AuthUtils {
@@ -52,7 +52,7 @@ object AuthUtils {
         subtitle: String,
         negativeButtonText: String = "Cancel"
     ) {
-        val settingsManager = (context.applicationContext as MyApplication).SettingsManager
+        val settingsManager = SettingsManager.instance
         val shouldPrompt = (settingsManager.getSetting(RequireAuthSetting::class)?.value ?: true) as Boolean
 
         Log.i("AuthUtils", "showBiometricPrompt: shouldPrompt = $shouldPrompt")

@@ -4,11 +4,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,6 +59,44 @@ fun SettingsCard(
 }
 
 @Composable
+fun HorizontalSettingsCard(
+    setting: Setting,
+    changeable: @Composable () -> Unit
+) {
+    val context = LocalContext.current
+    val title = context.resources.getIdentifier("settings.setting.${setting.key}", "string", context.packageName)
+    val description = context.resources.getIdentifier("settings.setting.${setting.key}.description", "string", context.packageName)
+
+    OutlinedCard(
+        modifier = Modifier.padding(vertical = 4.dp),
+        elevation = CardDefaults.cardElevation(2.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = title.takeIf { it != 0 }?.let { context.getString(it) } ?: setting.key,
+                    style = typography.titleMedium
+                )
+                Text(
+                    text = description.takeIf { it != 0 }?.let { context.getString(it) } ?: "No description found.",
+                    style = typography.bodyMedium
+                )
+
+                Spacer(modifier = Modifier
+                    .height(8.dp))
+
+                changeable()
+            }
+        }
+    }
+}
+
+@Composable
 fun BooleanCard (
     setting: Setting
 ) {
@@ -64,6 +104,19 @@ fun BooleanCard (
         val context = LocalContext.current
 
         Switch(checked = (setting.value) as Boolean, onCheckedChange = {
+            setting.onUIChangedValue(context, it)
+        })
+    }
+}
+
+@Composable
+fun StringCard(
+    setting: Setting
+) {
+    HorizontalSettingsCard(setting) {
+        val context = LocalContext.current
+
+        OutlinedTextField(value = (setting.value as String), onValueChange = {
             setting.onUIChangedValue(context, it)
         })
     }

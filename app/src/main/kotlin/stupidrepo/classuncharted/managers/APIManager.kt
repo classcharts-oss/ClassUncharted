@@ -10,18 +10,22 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import stupidrepo.classuncharted.JSON
 import stupidrepo.classuncharted.setContentLoading
+import stupidrepo.classuncharted.settings.ServerAPIURLSetting
 import java.time.Duration
 
 
 object APIManager {
-    const val USER_AGENT: String = "ClassUncharted-Networking/1.0.0 (Not a bot, check me out on GitHub: github.com/StupidRepo/ClassUncharted)"
+    const val USER_AGENT: String = "ClassUncharted-Networking/1.0.1 (Not a bot, check me out on GitHub: github.com/CommunityCharts/ClassUncharted)"
 
-    const val BASE_URL: String = "https://www.classcharts.com/"
-    const val API_URL: String = BASE_URL + "apiv2student/"
+    val BASE_URL: String
+        get() {
+            return (SettingsManager.instance.getSetting(ServerAPIURLSetting::class)?.value ?: ServerAPIURLSetting().defaultValue).toString()
+        }
+
 
     const val TAG = "APIManager"
 
-    val TIMEOUT = Duration.ofSeconds(12)
+    private val TIMEOUT: Duration = Duration.ofSeconds(12)
 
     private val OKHTTP_CLIENT: OkHttpClient = OkHttpClient.Builder()
         .dispatcher(Dispatcher().apply {
@@ -35,7 +39,7 @@ object APIManager {
 
     fun POST(endpoint: String, body: FormBody, withAuth: Boolean = false) : JsonElement {
         val request = Request.Builder()
-            .url(API_URL + endpoint)
+            .url(BASE_URL + endpoint)
             .header("Content-Type", "application/x-www-form-urlencoded")
             .header("Accept", "application/json")
             .header("User-Agent", USER_AGENT)
@@ -54,7 +58,7 @@ object APIManager {
 
     inline fun <reified T> GET(endpoint: String) : List<T> {
         val request = Request.Builder()
-            .url(API_URL + endpoint)
+            .url(BASE_URL + endpoint)
             .header("Content-Type", "application/x-www-form-urlencoded")
             .header("Accept", "application/json")
             .header("User-Agent", USER_AGENT)

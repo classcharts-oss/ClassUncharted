@@ -16,11 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
-import stupidrepo.classuncharted.MyApplication
+import stupidrepo.classuncharted.managers.SettingsManager
 import stupidrepo.classuncharted.ui.composables.AndroidAnnoyance
 import stupidrepo.classuncharted.ui.composables.BooleanCard
 import stupidrepo.classuncharted.ui.composables.CenteredText
 import stupidrepo.classuncharted.ui.composables.SettingsCard
+import stupidrepo.classuncharted.ui.composables.StringCard
 
 class SettingsActivity : FragmentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +30,7 @@ class SettingsActivity : FragmentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val settingsManager = (application as MyApplication).SettingsManager
+            val settingsManager = SettingsManager.instance
             val context = LocalContext.current
 
             AndroidAnnoyance(topBar = {
@@ -56,7 +57,8 @@ class SettingsActivity : FragmentActivity() {
                         items(settings.size) { index ->
                             val setting = settings[index]
                             when(setting.defaultValue) {
-                                is Boolean -> BooleanCard(setting = setting)
+                                is Boolean -> BooleanCard(setting)
+                                is String -> StringCard(setting)
                                 else -> SettingsCard(setting = setting) {}
                             }
                         }

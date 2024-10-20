@@ -5,11 +5,14 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import stupidrepo.classuncharted.data.api.converters.AttachmentsConverter
 import stupidrepo.classuncharted.utils.DateUtils
 import java.time.LocalDateTime
 
 @Entity
+@Serializable
 data class Announcement(
     @PrimaryKey val id: Int,
     val title: String,
@@ -17,7 +20,7 @@ data class Announcement(
     val teacher_name: String,
     val timestamp: String,
 
-    @TypeConverters(AttachmentsConverter::class) val attachments: List<Attachment>
+    @Contextual @TypeConverters(AttachmentsConverter::class) val attachments: List<Attachment>
 ): Parcelable {
     val format_timestamp: LocalDateTime
         get() = DateUtils.convertAPIDateTime(timestamp)

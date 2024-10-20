@@ -262,7 +262,7 @@ fun ActivityCard(activity: Activity) {
                     activity.format_detention_date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                     activity.detention_time ?: "Unknown",
                     0,
-                    activity.detention_location!!,
+                    activity.detention_location,
                     Teacher(-1, teacher[0], teacher[1], teacher[2]),
                     LessonPupilBehaviour(activity.reason),
                     DetentionType(activity.detention_type!!),

@@ -22,14 +22,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import stupidrepo.classuncharted.MyApplication
 import stupidrepo.classuncharted.data.api.Homework
 import stupidrepo.classuncharted.managers.LoginManager
 import stupidrepo.classuncharted.managers.SettingsManager
@@ -90,7 +88,7 @@ class HomeworkActivity : FragmentActivity() {
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun FullSizeHomework(homework: Homework) {
-    val settingsManager: SettingsManager = (LocalContext.current.applicationContext as MyApplication).SettingsManager
+    val settingsManager: SettingsManager = SettingsManager.instance
 
     // TODO: De-uglify code 💀
     val builder = StringBuilder()

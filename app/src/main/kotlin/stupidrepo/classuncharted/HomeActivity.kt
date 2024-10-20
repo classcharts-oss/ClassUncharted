@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import stupidrepo.classuncharted.managers.LoginManager
-import stupidrepo.classuncharted.service.NotificationService
 import stupidrepo.classuncharted.ui.activities.SettingsActivity
 import stupidrepo.classuncharted.ui.composables.AndroidAnnoyance
 import stupidrepo.classuncharted.ui.composables.IconTabSwitcher
@@ -122,7 +121,6 @@ class HomeActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        startService(Intent(this, NotificationService::class.java))
         refreshTab(selectedTabIndex.intValue)
 
         setContent {
